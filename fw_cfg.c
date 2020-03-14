@@ -141,7 +141,6 @@ static void boot_multiboot_from_fw_cfg(void)
 	void *kernel_addr, *kernel_entry;
 	struct mb_info *mb;
 	struct mb_mmap_entry *mbmem;
-	int i;
 	uint32_t sz;
 
 	fw_cfg_select(FW_CFG_KERNEL_SIZE);
@@ -166,7 +165,7 @@ static void boot_multiboot_from_fw_cfg(void)
 	mb->mem_upper = (lowmem - 1048576) >> 10;
 
 	mb->mmap_length = 0;
-	for (i = 0; i < e820->nr_map; i++) {
+	for (unsigned i = 0; i < e820->nr_map; i++) {
 		mbmem = (struct mb_mmap_entry *) (mb->mmap_addr + mb->mmap_length);
 		mbmem->size = sizeof(e820->map[i]);
 		mbmem->base_addr = e820->map[i].addr;
@@ -191,14 +190,12 @@ static void boot_multiboot_from_fw_cfg(void)
 static void pvh_e820_setup()
 {
 	struct hvm_memmap_table_entry *pvh_e820p;
-	int i, pvh_e820_sz;
-
-	pvh_e820_sz = sizeof(struct hvm_memmap_table_entry) * e820->nr_map;
+	const size_t pvh_e820_sz = sizeof(struct hvm_memmap_table_entry) * e820->nr_map;
 
 	pvh_e820p = malloc(pvh_e820_sz);
 	memset(pvh_e820p, 0, pvh_e820_sz);
 
-	for (i = 0; i < e820->nr_map; i++) {
+	for (unsigned i = 0; i < e820->nr_map; i++) {
 		pvh_e820p[i].addr = e820->map[i].addr;
 		pvh_e820p[i].size = e820->map[i].size;
 		pvh_e820p[i].type = e820->map[i].type;

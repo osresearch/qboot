@@ -39,7 +39,6 @@ static void extract_e820(void)
 	int id = fw_cfg_file_id("etc/e820");
 	uint32_t size;
 	int nr_map;
-	int i;
 
 	if (id == -1)
 		panic();
@@ -58,7 +57,7 @@ static void extract_e820(void)
 	e820->map[3] = (struct e820entry)
 		{ .addr = 0xf0000, .size = 64 * 1024, .type = E820_RESERVED }; /* firmware */
 
-	i = 4;
+	unsigned i = 4;
 	if (have_mmconfig)
 		e820->map[i++] = (struct e820entry)
 			{ .addr = PCIE_MMCONFIG_BASE, .size = PCIE_MMCONFIG_SIZE, .type = E820_RESERVED };

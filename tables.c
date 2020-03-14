@@ -109,16 +109,12 @@ static void do_ptr(char *dest, char *src, uint32_t offset, uint8_t size)
 
 static void do_checksum(char *file, uint32_t offset, uint32_t start, uint32_t len)
 {
-	uint8_t *p;
-	int id;
-	int n;
-
-	id = fw_cfg_file_id(file);
-	p = id_to_addr(id);
+	const int id = fw_cfg_file_id(file);
+	uint8_t * const p = id_to_addr(id);
 	if (!p)
 		panic();
 
-	n = fw_cfg_file_size(id);
+	const unsigned n = fw_cfg_file_size(id);
 	if (offset >= n || n < start || len > n - start)
 		panic();
 
@@ -130,14 +126,13 @@ void extract_acpi(void)
 	int id = fw_cfg_file_id("etc/table-loader");
 	int n = fw_cfg_file_size(id);
 	struct loader_cmd script[n / sizeof(struct loader_cmd)];
-	int i;
 
 	if (!n)
 		return;
 
 	fw_cfg_read_file(id, script, n);
 
-	for (i = 0; i < ARRAY_SIZE(script); i++) {
+	for (unsigned i = 0; i < ARRAY_SIZE(script); i++) {
 		struct loader_cmd *s = &script[i];
 		switch(script[i].cmd) {
 		case CMD_ALLOC:
